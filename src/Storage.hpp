@@ -7,6 +7,8 @@
 #include <map>
 #include <string>
 #include <memory>
+#include "Track.hpp"
+#include "Album.hpp"
 
 #define SD_SLOT BUILTIN_SDCARD
 #define DELIMITER "__"
@@ -14,8 +16,10 @@
 class Storage
 {
 private:
-  std::map<std::string, std::vector<std::string>> content;
+  std::vector<std::shared_ptr<Track>> tracks;
+  std::vector<std::shared_ptr<Album>> albums;
   void read_files();
+  std::shared_ptr<Album> get_album_with_name(std::string n);
   bool setup_successful = false;
 
 public:

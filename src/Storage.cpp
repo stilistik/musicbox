@@ -41,6 +41,12 @@ void Storage::read_files()
 
     File entry = root.openNextFile();
 
+    if (!entry)
+    {
+      // no more files
+      break;
+    }
+
     if (entry.isDirectory())
     {
       // disregard directories
@@ -69,19 +75,34 @@ void Storage::read_files()
 
     size_t pos = fn.find(DELIMITER);
     std::string album_name = fn.substr(0, pos);
-    std::string song_name = fn.substr(pos + std::string(DELIMITER).length(), fn.length());
+    std::string track_name = fn.substr(pos + std::string(DELIMITER).length(), fn.length());
 
-    auto it = content.find(album_name);
-    if (it != content.end())
+    auto album = get_album_with_name(album_name);
+
+    std::shared_ptr<Track> track(new Track(track_name));
+    tracks.push_back(track);
+    album->add_track(track);
+
+    entry.close();
+  }
+
+  std::stringstream ss;
+  ss << "Albums: " << albums.size() << " Tracks: " << tracks.size();
+  monitor.print(ss);
+}
+
+std::shared_ptr<Album> Storage::get_album_with_name(std::string name)
+{
+  for (auto album : albums)
+  {
+    if (album->get_name() == name)
     {
-      it->second.push_back(song_name);
-    }
-    else
-    {
-      std::vector<std::string> vec = {song_name};
-      content.insert({album_name, vec});
+      return album;
     }
   }
+  std::shared_ptr<Album> album(new Album(name));
+  albums.push_back(album);
+  return album;
 }
 
 void Storage::update()
