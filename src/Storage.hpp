@@ -27,6 +27,7 @@ public:
   void setup();
   void update();
   std::shared_ptr<Album> get_album(int idx);
+std::shared_ptr<Track> get_track_by_rfid(std::string rfid);
 };
 
 #endif /* STORAGE_HPP_ */

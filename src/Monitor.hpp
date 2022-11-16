@@ -24,6 +24,8 @@ public:
   void print(int number);
   void print(float number);
   void print(const char *str);
+  void print(int arr[]);
+  void print(unsigned char arr[]);
   void print(std::string str);
   void print(std::vector<int> &vec);
   void print(std::vector<bool> &vec);

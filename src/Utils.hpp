@@ -7,6 +7,6 @@ bool str_has_extension(std::string str, std::string token);
 bool str_starts_with(std::string str, std::string token);
 int str_count_occurrences(std::string str, std::string token);
 bool str_contains(std::string str, std::string token);
-bool str_contains_once(std::string str, std::string token);
+bool str_contains_times(std::string str, std::string token, int times);
 
 #endif /* UTILS_HPP_ */

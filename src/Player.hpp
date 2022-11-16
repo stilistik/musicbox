@@ -8,6 +8,7 @@
 #include <SD.h>
 #include <SerialFlash.h>
 #include "Storage.hpp"
+#include "CardReader.hpp"
 
 #define PLAY_BUTTON_PIN 29
 #define NEXT_BUTTON_PIN 31
@@ -15,10 +16,11 @@
 #define ALBUM_BUTTON_PIN 32
 #define VOLUME_PIN 27
 
-class Player
+class Player : public CardReaderListener
 {
 private:
   Storage &storage;
+  CardReader &reader;
 
   AudioPlaySdWav playSdWav1;
   AudioOutputI2S audioOutput;
@@ -42,9 +44,10 @@ private:
   void update_volume();
 
 public:
-  Player(Storage &storage);
+  Player(Storage &storage, CardReader &reader);
   void setup();
   void update();
+  void on_card_read(std::string rfid) override;
 };
 
 #endif /* PLAYER_HPP_ */

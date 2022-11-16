@@ -1,14 +1,16 @@
 #include "Player.hpp"
 #include "Monitor.hpp"
 
-Player::Player(Storage &storage)
+Player::Player(Storage &storage, CardReader &reader)
     : storage(storage),
+      reader(reader),
       playSdWav1(AudioPlaySdWav()),
       audioOutput(AudioOutputI2S()),
       patchCord1(AudioConnection(playSdWav1, 0, audioOutput, 0)),
       patchCord2(AudioConnection(playSdWav1, 1, audioOutput, 1)),
       sgtl5000_1(AudioControlSGTL5000())
 {
+  reader.register_listener(this);
 }
 
 void Player::setup()
@@ -103,4 +105,13 @@ void Player::update_volume()
   int value = analogRead(VOLUME_PIN);
   float volume = (float)value / 1023;
   sgtl5000_1.volume(volume);
+}
+
+void Player::on_card_read(std::string rfid)
+{
+  auto track = storage.get_track_by_rfid(rfid);
+  if (track)
+  {
+    playSdWav1.play(track->get_file_path());
+  }
 }

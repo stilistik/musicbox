@@ -27,7 +27,7 @@ bool str_contains(std::string str, std::string token)
   return str_count_occurrences(str, token) > 0;
 }
 
-bool str_contains_once(std::string str, std::string token)
+bool str_contains_times(std::string str, std::string token, int times)
 {
-  return str_count_occurrences(str, token) == 1;
+  return str_count_occurrences(str, token) == times;
 }

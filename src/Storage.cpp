@@ -67,19 +67,23 @@ void Storage::read_files()
       continue;
     }
 
-    if (!str_contains_once(fn, DELIMITER))
+    if (!str_contains_times(fn, DELIMITER, 2))
     {
       // discard files with invalid names
       continue;
     }
 
-    size_t pos = fn.find(DELIMITER);
-    std::string album_name = fn.substr(0, pos);
-    std::string track_name = fn.substr(pos + std::string(DELIMITER).length(), fn.length());
+    size_t pos = 0;
+    std::vector<std::string> track_data;
+    auto file_path = fn;
+    while ((pos = fn.find(DELIMITER)) != std::string::npos)
+    {
+      track_data.push_back(fn.substr(0, pos));
+      fn.erase(0, pos + std::string(DELIMITER).length());
+    }
 
-    auto album = get_album_with_name(album_name);
-
-    std::shared_ptr<Track> track(new Track(track_name, fn));
+    auto album = get_album_with_name(track_data[1]);
+    std::shared_ptr<Track> track(new Track(fn, file_path, track_data[0]));
     tracks.push_back(track);
     album->add_track(track);
 
@@ -117,4 +121,16 @@ std::shared_ptr<Album> Storage::get_album(int idx)
 {
   int index = constrain(idx, 0, albums.size() - 1);
   return albums[index];
+}
+
+std::shared_ptr<Track> Storage::get_track_by_rfid(std::string rfid)
+{
+  for (auto t : tracks)
+  {
+    if (t->get_rfid() == rfid)
+    {
+      return t;
+    }
+  }
+  return nullptr;
 }

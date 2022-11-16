@@ -53,6 +53,32 @@ void Monitor::print(int number)
   }
 }
 
+void Monitor::print(int *arr)
+{
+  if (should_print())
+  {
+    for (unsigned int i = 0; i <= sizeof(arr); i++)
+    {
+      Serial.print(arr[i]);
+      Serial.print(" ");
+    }
+    Serial.println();
+  }
+}
+
+void Monitor::print(unsigned char *arr)
+{
+  if (should_print())
+  {
+    for (unsigned int i = 0; i <= sizeof(arr); i++)
+    {
+      Serial.print(arr[i]);
+      Serial.print(" ");
+    }
+    Serial.println();
+  }
+}
+
 void Monitor::print(float number)
 {
   if (should_print())
