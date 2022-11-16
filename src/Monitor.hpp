@@ -22,6 +22,7 @@ private:
 public:
   Monitor(unsigned int interval);
   void print(int number);
+  void print(float number);
   void print(const char *str);
   void print(std::string str);
   void print(std::vector<int> &vec);

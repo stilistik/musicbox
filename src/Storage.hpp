@@ -26,6 +26,7 @@ public:
   Storage();
   void setup();
   void update();
+  std::shared_ptr<Album> get_album(int idx);
 };
 
 #endif /* STORAGE_HPP_ */

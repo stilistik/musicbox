@@ -6,10 +6,11 @@
 class Track
 {
 private:
+  std::string name;
   std::string file_path;
 
 public:
-  Track(std::string fp);
+  Track(std::string name, std::string fp);
   const char *get_file_path();
 };
 

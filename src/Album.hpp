@@ -15,6 +15,8 @@ public:
   Album(std::string name);
   void add_track(std::shared_ptr<Track> t);
   std::string get_name();
+  std::shared_ptr<Track> get_track(int i);
+  int size();
 };
 
 #endif /* ALBUM_HPP_ */

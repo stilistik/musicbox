@@ -2,7 +2,7 @@
 #include "Player.hpp"
 
 Storage storage;
-Player player;
+Player player = Player(storage);
 
 void setup()
 {

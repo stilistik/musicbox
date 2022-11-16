@@ -1,8 +1,9 @@
 #include "Player.hpp"
 #include "Monitor.hpp"
 
-Player::Player()
-    : playSdWav1(AudioPlaySdWav()),
+Player::Player(Storage &storage)
+    : storage(storage),
+      playSdWav1(AudioPlaySdWav()),
       audioOutput(AudioOutputI2S()),
       patchCord1(AudioConnection(playSdWav1, 0, audioOutput, 0)),
       patchCord2(AudioConnection(playSdWav1, 1, audioOutput, 1)),
@@ -23,29 +24,83 @@ void Player::setup()
       delay(500);
     }
   }
+
+  pinMode(PLAY_BUTTON_PIN, INPUT_PULLDOWN);
+  pinMode(NEXT_BUTTON_PIN, INPUT_PULLDOWN);
+  pinMode(PREV_BUTTON_PIN, INPUT_PULLDOWN);
+  pinMode(ALBUM_BUTTON_PIN, INPUT_PULLDOWN);
 }
 
 void Player::update()
 {
-  if (playSdWav1.isPlaying() == false)
+  update_buttons();
+}
+
+void Player::update_buttons()
+{
+  update_album_button();
+  update_prev_button();
+  update_next_button();
+  update_play_button();
+  update_volume();
+}
+
+void Player::update_play_button()
+{
+  play_button.update();
+  if (play_button.risingEdge())
   {
-    monitor.print("Start playing");
-    playSdWav1.play("album1__song1.WAV");
-    delay(10); // wait for library to parse WAV info
+    if (playSdWav1.isStopped())
+    {
+      monitor.print("PLAY");
+      auto album = storage.get_album(current_album);
+      auto track = album->get_track(current_track);
+      playSdWav1.play(track->get_file_path());
+    }
+    else
+    {
+      playSdWav1.togglePlayPause();
+    }
   }
-
-  // print the play time offset
-  monitor.print("Playing, now at ");
-  monitor.print(playSdWav1.positionMillis());
-  monitor.print(" ms");
 }
 
-void Player::play_track(std::shared_ptr<Track> track)
+void Player::update_next_button()
 {
-  playSdWav1.play(track->get_file_path());
+  next_button.update();
+  if (next_button.risingEdge())
+  {
+    monitor.print("NEXT");
+    auto album = storage.get_album(current_album);
+    current_track = constrain(++current_track, 0, album->size());
+    auto track = album->get_track(current_track);
+    playSdWav1.play(track->get_file_path());
+  }
 }
 
-void Player::stop()
+void Player::update_prev_button()
 {
-  playSdWav1.stop();
+  prev_button.update();
+  if (prev_button.risingEdge())
+  {
+    monitor.print("PREV");
+    auto album = storage.get_album(current_album);
+    current_track = constrain(--current_track, 0, album->size());
+    auto track = album->get_track(current_track);
+    playSdWav1.play(track->get_file_path());
+  }
+}
+void Player::update_album_button()
+{
+  album_button.update();
+  if (album_button.risingEdge())
+  {
+    monitor.print("ALBUM");
+  }
+}
+
+void Player::update_volume()
+{
+  int value = analogRead(VOLUME_PIN);
+  float volume = (float)value / 1023;
+  sgtl5000_1.volume(volume);
 }

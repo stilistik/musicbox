@@ -79,7 +79,7 @@ void Storage::read_files()
 
     auto album = get_album_with_name(album_name);
 
-    std::shared_ptr<Track> track(new Track(track_name));
+    std::shared_ptr<Track> track(new Track(track_name, fn));
     tracks.push_back(track);
     album->add_track(track);
 
@@ -111,4 +111,10 @@ void Storage::update()
   {
     MTP.loop();
   }
+}
+
+std::shared_ptr<Album> Storage::get_album(int idx)
+{
+  int index = constrain(idx, 0, albums.size() - 1);
+  return albums[index];
 }

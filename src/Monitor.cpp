@@ -53,6 +53,14 @@ void Monitor::print(int number)
   }
 }
 
+void Monitor::print(float number)
+{
+  if (should_print())
+  {
+    Serial.println(number);
+  }
+}
+
 void Monitor::print(const char *str)
 {
   if (should_print())
