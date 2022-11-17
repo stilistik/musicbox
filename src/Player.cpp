@@ -58,7 +58,7 @@ void Player::on_play()
     monitor.print("PLAY");
     auto album = storage.get_album(current_album);
     auto track = album->get_track(current_track);
-    playSdWav1.play(track->get_file_path());
+    playSdWav1.play(track->get_file_path().c_str());
   }
   else
   {
@@ -72,7 +72,7 @@ void Player::on_next()
   auto album = storage.get_album(current_album);
   current_track = constrain(++current_track, 0, album->size());
   auto track = album->get_track(current_track);
-  playSdWav1.play(track->get_file_path());
+  playSdWav1.play(track->get_file_path().c_str());
 }
 
 void Player::on_prev()
@@ -81,7 +81,7 @@ void Player::on_prev()
   auto album = storage.get_album(current_album);
   current_track = constrain(--current_track, 0, album->size());
   auto track = album->get_track(current_track);
-  playSdWav1.play(track->get_file_path());
+  playSdWav1.play(track->get_file_path().c_str());
 }
 
 void Player::on_album()
@@ -104,14 +104,16 @@ void Player::on_card_read(std::string rfid)
     auto track = storage.get_track_by_rfid(rfid);
     if (track)
     {
+      monitor.print(std::string(track->get_file_path()));
       current_album = storage.get_album_index(track->get_album());
       current_track = track->get_album()->get_track_index(track);
-      playSdWav1.play(track->get_file_path());
+      playSdWav1.play(track->get_file_path().c_str());
     }
   }
   else if (player_mode == PLAYER_MODE_RFID_WRITE)
   {
     playSdWav1.stop();
+    delay(10);
     auto album = storage.get_album(current_album);
     auto track = album->get_track(current_track);
     storage.write_track_rfid(rfid, track->get_file_path());

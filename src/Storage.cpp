@@ -83,7 +83,10 @@ void Storage::read_files()
     }
 
     auto album = get_album_with_name(track_data[1]);
-    std::shared_ptr<Track> track(new Track(fn, file_path, track_data[0], album));
+    auto rfid = track_data[0];
+    auto track_name = fn;
+
+    std::shared_ptr<Track> track(new Track(track_name, rfid, album));
     tracks.push_back(track);
     album->add_track(track);
 
