@@ -23,8 +23,8 @@ Player::Player(Storage &storage, CardReader &reader)
 void Player::setup()
 {
   AudioMemory(8);
+  sgtl5000_1.volume(0.5);
   sgtl5000_1.enable();
-  sgtl5000_1.volume(1);
   mixer1.gain(0, 0.4);
   mixer2.gain(0, 0.4);
   mixer1.gain(1, 0.4);
