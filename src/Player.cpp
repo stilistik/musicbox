@@ -23,7 +23,7 @@ Player::Player(Storage &storage, CardReader &reader)
 void Player::setup()
 {
   AudioMemory(8);
-  sgtl5000_1.volume(0.5);
+  sgtl5000_1.volume(0.5); // increasing this will add background noise to headphones
   sgtl5000_1.enable();
   mixer1.gain(0, 0.4);
   mixer2.gain(0, 0.4);
@@ -113,7 +113,7 @@ void Player::on_card_read(std::string rfid)
   else if (player_mode == PLAYER_MODE_RFID_WRITE)
   {
     playSdWav1.stop();
-    delay(10);
+    delay(10); // give time to close files
     auto album = storage.get_album(current_album);
     auto track = album->get_track(current_track);
     storage.write_track_rfid(rfid, track->get_file_path());
