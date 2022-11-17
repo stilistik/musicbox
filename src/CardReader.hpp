@@ -9,6 +9,8 @@
 #define RST_PIN 33
 #define NSS_PIN 10
 
+#define CARDREADER_BROADCAST_INTERVAL_MS 2000
+
 class CardReaderListener
 {
 public:
@@ -22,6 +24,8 @@ private:
   RFID rfid;
   std::vector<CardReaderListener *> listeners;
   std::string str(unsigned char *num);
+  long last_read = 0;
+  void broadcast_card_read_event();
 
 public:
   CardReader();

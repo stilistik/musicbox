@@ -17,15 +17,27 @@ void CardReader::update()
   {
     if (rfid.readCardSerial())
     {
-      auto s = str(rfid.serNum);
-      monitor.print(s);
-      for (auto l : listeners)
+      long elapsed = millis() - last_read;
+      if (elapsed > CARDREADER_BROADCAST_INTERVAL_MS)
       {
-        l->on_card_read(s);
+        broadcast_card_read_event();
+        last_read = millis();
       }
     }
   }
   rfid.halt();
+}
+
+void CardReader::broadcast_card_read_event()
+{
+  auto card_serial_number = str(rfid.serNum);
+  std::stringstream ss;
+  ss << "Card Read: " << card_serial_number;
+  monitor.print(ss);
+  for (auto l : listeners)
+  {
+    l->on_card_read(card_serial_number);
+  }
 }
 
 std::string CardReader::str(unsigned char *num)
