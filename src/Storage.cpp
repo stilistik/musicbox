@@ -83,7 +83,7 @@ void Storage::read_files()
     }
 
     auto album = get_album_with_name(track_data[1]);
-    std::shared_ptr<Track> track(new Track(fn, file_path, track_data[0]));
+    std::shared_ptr<Track> track(new Track(fn, file_path, track_data[0], album));
     tracks.push_back(track);
     album->add_track(track);
 
@@ -133,4 +133,40 @@ std::shared_ptr<Track> Storage::get_track_by_rfid(std::string rfid)
     }
   }
   return nullptr;
+}
+
+void Storage::write_track_rfid(std::string rfid, std::string fp)
+{
+  size_t pos = 0;
+  std::vector<std::string> track_data;
+  auto old_file_path = fp;
+  while ((pos = fp.find(DELIMITER)) != std::string::npos)
+  {
+    track_data.push_back(fp.substr(0, pos));
+    fp.erase(0, pos + std::string(DELIMITER).length());
+  }
+
+  std::stringstream ss;
+  ss << rfid << DELIMITER << track_data[1] << DELIMITER << fp;
+  auto new_file_path = ss.str();
+
+  if (SD.exists(old_file_path.c_str()))
+  {
+    SD.rename(old_file_path.c_str(), new_file_path.c_str());
+  }
+
+  auto track = get_track_by_rfid(track_data[0]);
+  track->set_rfid(rfid);
+}
+
+int Storage::get_album_index(std::shared_ptr<Album> album)
+{
+  for (int i = 0; i < albums.size(); ++i)
+  {
+    if (albums[i] == album)
+    {
+      return i;
+    }
+  }
+  return -1;
 }

@@ -21,7 +21,6 @@ class CardReader
 private:
   RFID rfid;
   std::vector<CardReaderListener *> listeners;
-
   std::string str(unsigned char *num);
 
 public:

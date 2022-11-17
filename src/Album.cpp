@@ -23,3 +23,15 @@ int Album::size()
 {
   return tracks.size();
 }
+
+int Album::get_track_index(std::shared_ptr<Track> t)
+{
+  for (int i = 0; i < tracks.size(); ++i)
+  {
+    if (tracks[i] == t)
+    {
+      return i;
+    }
+  }
+  return -1;
+}
