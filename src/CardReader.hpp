@@ -6,7 +6,7 @@
 #include <string>
 #include <vector>
 
-#define RST_PIN 33
+#define RST_PIN 41
 #define NSS_PIN 10
 
 #define CARDREADER_BROADCAST_INTERVAL_MS 2000
