@@ -13,6 +13,7 @@ void setup()
   storage.setup();
   player.setup();
   reader.setup();
+  btn_mgr.setup();
   btn_mgr.register_listener(&player);
 }
 

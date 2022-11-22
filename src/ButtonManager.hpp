@@ -28,6 +28,7 @@ private:
 public:
   ButtonManager();
   void update();
+  void setup();
   void register_listener(ButtonManagerListener *l);
   void on_button_down(Button *btn) override;
   void on_button_up(Button *btn) override;

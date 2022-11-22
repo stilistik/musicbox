@@ -3,14 +3,19 @@
 #include <algorithm>
 
 ButtonManager::ButtonManager() : buttons({
-                                     new Button(PLAY_BUTTON_PIN, PLAY_BUTTON_TYPE),
-                                     new Button(NEXT_BUTTON_PIN, NEXT_BUTTON_TYPE),
-                                     new Button(PREV_BUTTON_PIN, PREV_BUTTON_TYPE),
-                                     new Button(ALBUM_BUTTON_PIN, ALBUM_BUTTON_TYPE),
+                                     new Button(PLAY_BUTTON_PIN, PLAY_BUTTON_LED_PIN, PLAY_BUTTON_TYPE),
+                                     new Button(NEXT_BUTTON_PIN, NEXT_BUTTON_LED_PIN, NEXT_BUTTON_TYPE),
+                                     new Button(PREV_BUTTON_PIN, PREV_BUTTON_LED_PIN, PREV_BUTTON_TYPE),
+                                     new Button(ALBUM_BUTTON_PIN, ALBUM_BUTTON_LED_PIN, ALBUM_BUTTON_TYPE),
                                  })
+{
+}
+
+void ButtonManager::setup()
 {
   for (auto btn : buttons)
   {
+    btn->setup();
     btn->register_listener(this);
   }
 }

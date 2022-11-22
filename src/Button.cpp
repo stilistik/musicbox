@@ -2,7 +2,12 @@
 #include "Arduino.h"
 #include "Monitor.hpp"
 
-Button::Button(unsigned int pin, int type) : type(type), bounce(Bounce(pin, 10)) {}
+Button::Button(unsigned int pin, unsigned int led_pin, int type) : type(type), led_pin(led_pin), bounce(Bounce(pin, 10)) {}
+
+void Button::setup()
+{
+  pinMode(led_pin, OUTPUT);
+}
 
 void Button::update()
 {
@@ -14,7 +19,7 @@ void Button::update()
   }
   if (bounce.fallingEdge())
   {
-    if (down_time > 0)
+    if (is_pressed())
     {
       long elapsed = millis() - down_time;
       if (elapsed < CLICK_INTERVAL_MS)
@@ -28,6 +33,14 @@ void Button::update()
     }
     down_time = 0;
     broadcast_up_event();
+  }
+  if (is_pressed())
+  {
+    digitalWrite(led_pin, HIGH);
+  }
+  else
+  {
+    digitalWrite(led_pin, LOW);
   }
 }
 
@@ -49,6 +62,7 @@ void Button::broadcast_long_click_event()
 
 void Button::broadcast_down_event()
 {
+
   for (auto l : listeners)
   {
     l->on_button_down(this);
