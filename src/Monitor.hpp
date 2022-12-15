@@ -29,6 +29,7 @@ public:
   void print(std::string str);
   void print(std::vector<int> &vec);
   void print(std::vector<bool> &vec);
+  void print(std::vector<std::string> &vec);
   void print(std::map<int, int> &map);
   void print(std::stringstream &ss);
 };

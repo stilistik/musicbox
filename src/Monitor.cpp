@@ -134,6 +134,22 @@ void Monitor::print(std::vector<bool> &vec)
   }
 }
 
+void Monitor::print(std::vector<std::string> &vec)
+{
+  if (vec.size() == 0)
+    return;
+
+  if (should_print())
+  {
+    for (unsigned int i = 0; i < vec.size(); ++i)
+    {
+      Serial.print(vec[i].c_str());
+      Serial.print(" ");
+    }
+    Serial.println("");
+  }
+}
+
 void Monitor::print(std::map<int, int> &map)
 {
   if (map.size() == 0)

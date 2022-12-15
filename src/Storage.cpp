@@ -1,6 +1,9 @@
 #include "Storage.hpp"
 #include "Monitor.hpp"
 #include "Utils.hpp"
+#include <vector>
+#include <sstream>
+#include <string>
 
 Storage::Storage()
 {
@@ -24,77 +27,49 @@ void Storage::setup()
   setup_successful = true;
 
   // read the wav files form the SD card
-  read_files();
+  // read_files();
+  read_index();
 }
 
-void Storage::read_files()
+void Storage::read_index()
 {
   if (!setup_successful)
   {
     return;
   }
-
-  File root = SD.open("/");
-  while (true)
+  if (!SD.exists("index.csv"))
   {
+    monitor.print("No index.csv file found.");
+    return;
+  }
+  File file = SD.open("index.csv");
 
-    File entry = root.openNextFile();
+  // Read the file line by line
+  while (file.available())
+  {
+    auto line = std::string(file.readStringUntil('\n').c_str());
 
-    if (!entry)
+    std::vector<std::string> tokens;
+    std::stringstream ss(line);
+    std::string token;
+
+    while (std::getline(ss, token, ';'))
     {
-      // no more files
-      break;
+      tokens.push_back(token);
     }
 
-    if (entry.isDirectory())
-    {
-      // disregard directories
-      continue;
-    }
+    auto album_name = tokens[0];
+    auto track_name = tokens[1];
+    auto file_path = tokens[2];
+    auto rfid_code = tokens[3];
 
-    std::string fn = entry.name();
-
-    if (!str_has_extension(fn, "wav"))
-    {
-      // disregard non-wav files
-      continue;
-    }
-
-    if (str_starts_with(fn, "."))
-    {
-      // disregard hidden files
-      continue;
-    }
-
-    if (!str_contains_times(fn, DELIMITER, 2))
-    {
-      // discard files with invalid names
-      continue;
-    }
-
-    size_t pos = 0;
-    std::vector<std::string> track_data;
-    auto file_path = fn;
-    while ((pos = fn.find(DELIMITER)) != std::string::npos)
-    {
-      track_data.push_back(fn.substr(0, pos));
-      fn.erase(0, pos + std::string(DELIMITER).length());
-    }
-
-    auto album = get_album_with_name(track_data[1]);
-    auto rfid = track_data[0];
-    auto track_name = fn;
-
-    std::shared_ptr<Track> track(new Track(track_name, rfid, album));
+    auto album = get_album_with_name(album_name);
+    std::shared_ptr<Track> track(new Track(track_name, file_path, rfid_code, album));
     tracks.push_back(track);
     album->add_track(track);
-
-    entry.close();
   }
 
-  std::stringstream ss;
-  ss << "Albums: " << albums.size() << " Tracks: " << tracks.size();
-  monitor.print(ss);
+  file.close();
 }
 
 std::shared_ptr<Album> Storage::get_album_with_name(std::string name)

@@ -5,7 +5,7 @@
 #include <vector>
 #include <string>
 
-#define CLICK_INTERVAL_MS 300
+#define CLICK_INTERVAL_MS 3000
 #define LONG_CLICK_INTERVAL_MS 3000
 
 #define PLAY_BUTTON_PIN 29

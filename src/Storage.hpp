@@ -17,9 +17,9 @@ class Storage
 private:
   std::vector<std::shared_ptr<Track>> tracks;
   std::vector<std::shared_ptr<Album>> albums;
-  void read_files();
   std::shared_ptr<Album> get_album_with_name(std::string n);
   bool setup_successful = false;
+  void read_index();
 
 public:
   Storage();

@@ -59,6 +59,7 @@ void Player::on_play()
     monitor.print("PLAY");
     auto album = storage.get_album(current_album);
     auto track = album->get_track(current_track);
+    monitor.print(track->get_file_path());
     playSdWav1.play(track->get_file_path().c_str());
   }
   else
@@ -105,7 +106,6 @@ void Player::update_volume()
 
   int value = analogRead(VOLUME_PIN);
   float volume = (float)value / 1023;
-  monitor.print(value);
   mixer1.gain(0, volume);
   mixer2.gain(0, volume);
 }

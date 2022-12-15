@@ -2,14 +2,12 @@
 #include "Storage.hpp"
 #include "Monitor.hpp"
 
-Track::Track(std::string name, std::string rfid, std::shared_ptr<Album> album)
-    : name(name), rfid(rfid), album(album) {}
+Track::Track(std::string name, std::string fp, std::string rfid, std::shared_ptr<Album> album)
+    : name(name), file_path(fp), rfid(rfid), album(album) {}
 
 std::string Track::get_file_path()
 {
-  std::stringstream ss;
-  ss << rfid << DELIMITER << album->get_name() << DELIMITER << name;
-  return ss.str();
+  return file_path;
 }
 
 std::string Track::get_rfid()
