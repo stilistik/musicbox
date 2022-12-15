@@ -25,7 +25,7 @@ void Player::setup()
   AudioMemory(8);
   // maxing this out will add noise to headphones
   sgtl5000_1.enable();
-  sgtl5000_1.volume(0.5);
+  sgtl5000_1.volume(0.6);
   mixer1.gain(0, 0.4);
   mixer2.gain(0, 0.4);
   mixer1.gain(1, 0.4);
@@ -92,6 +92,17 @@ void Player::on_album()
 
 void Player::update_volume()
 {
+  int hpv = analogRead(HEADPHONE_PIN);
+
+  if (hpv > 50)
+  {
+    sgtl5000_1.unmuteLineout();
+  }
+  else
+  {
+    sgtl5000_1.muteLineout();
+  }
+
   int value = analogRead(VOLUME_PIN);
   float volume = (float)value / 1023;
   monitor.print(value);
