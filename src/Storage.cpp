@@ -9,12 +9,11 @@ Storage::Storage()
 void Storage::setup()
 {
   monitor.print("Setting up storage...");
-  MTP.begin();
+  // MTP.begin();
 
   // Add SD Card
   if (SD.begin(SD_SLOT))
   {
-    MTP.addFilesystem(SD, "SD Card");
     monitor.print("Added SD card using built in SDIO, or given SPI CS");
   }
   else
@@ -114,10 +113,6 @@ std::shared_ptr<Album> Storage::get_album_with_name(std::string name)
 
 void Storage::update()
 {
-  if (setup_successful)
-  {
-    MTP.loop();
-  }
 }
 
 std::shared_ptr<Album> Storage::get_album(int idx)

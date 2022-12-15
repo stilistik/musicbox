@@ -2,7 +2,6 @@
 #define STORAGE_HPP_
 
 #include <SD.h>
-#include <MTP_Teensy.h>
 #include <vector>
 #include <map>
 #include <string>
