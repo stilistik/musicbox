@@ -12,12 +12,12 @@ void Button::setup()
 void Button::update()
 {
   bounce.update();
-  if (bounce.risingEdge())
+  if (bounce.fallingEdge())
   {
     down_time = millis();
     broadcast_down_event();
   }
-  if (bounce.fallingEdge())
+  if (bounce.risingEdge())
   {
     if (is_pressed())
     {
