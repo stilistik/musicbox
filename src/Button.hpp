@@ -6,7 +6,7 @@
 #include <string>
 
 #define CLICK_INTERVAL_MS 300
-#define LONG_CLICK_INTERVAL_MS 1000
+#define LONG_CLICK_INTERVAL_MS 3000
 
 #define PLAY_BUTTON_PIN 29
 #define NEXT_BUTTON_PIN 31
