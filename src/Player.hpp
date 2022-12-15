@@ -49,6 +49,7 @@ private:
   int current_album = 0;
   int player_mode = PLAYER_MODE_RFID_READ;
 
+  void update_buttons();
   void on_play();
   void on_next();
   void on_prev();
