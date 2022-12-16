@@ -106,10 +106,13 @@ void Player::play_track(std::shared_ptr<Track> track)
   if (!SD.exists(fp.c_str()))
   {
     std::stringstream ss;
-    ss << "File " << fp << "does not exist.";
+    ss << "File " << fp << " does not exist.";
     monitor.print(ss);
     return;
   }
+
+  playSdWav1.stop();
+  delay(50);
   playSdWav1.play(fp.c_str());
 }
 
