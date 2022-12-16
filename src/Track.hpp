@@ -21,6 +21,7 @@ public:
   std::string get_rfid();
   void set_rfid(std::string rfid);
   std::shared_ptr<Album> get_album();
+  std::string get_index_data();
 };
 
 #endif /* TRACK_HPP_ */

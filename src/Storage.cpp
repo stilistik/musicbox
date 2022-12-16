@@ -37,12 +37,13 @@ void Storage::read_index()
   {
     return;
   }
-  if (!SD.exists("index.csv"))
+
+  File file = SD.open("index.csv");
+  if (!file)
   {
     monitor.print("No index.csv file found.");
     return;
   }
-  File file = SD.open("index.csv");
 
   // Read the file line by line
   while (file.available())
@@ -108,33 +109,39 @@ std::shared_ptr<Track> Storage::get_track_by_rfid(std::string rfid)
   return nullptr;
 }
 
-void Storage::write_track_rfid(std::string rfid, std::string fp)
+void Storage::write_track_rfid(std::string rfid, std::shared_ptr<Track> track)
 {
-  size_t pos = 0;
-  std::vector<std::string> track_data;
-  auto old_file_path = fp;
-  while ((pos = fp.find(DELIMITER)) != std::string::npos)
+  File file = SD.open("index.csv", FILE_WRITE);
+  if (!file)
   {
-    track_data.push_back(fp.substr(0, pos));
-    fp.erase(0, pos + std::string(DELIMITER).length());
+    monitor.print("No index.csv file found.");
+    return;
   }
 
-  std::stringstream ss;
-  ss << rfid << DELIMITER << track_data[1] << DELIMITER << fp;
-  auto new_file_path = ss.str();
-
-  if (SD.exists(old_file_path.c_str()))
-  {
-    SD.rename(old_file_path.c_str(), new_file_path.c_str());
-  }
-
-  auto track = get_track_by_rfid(track_data[0]);
+  auto old_line = track->get_index_data();
   track->set_rfid(rfid);
+  auto new_line = track->get_index_data();
+
+  // Read the file line by line
+  while (file.available())
+  {
+    auto line = std::string(file.readStringUntil('\n').c_str());
+    if (line == old_line)
+    {
+      file.println(new_line.c_str());
+    }
+    else
+    {
+      file.println(line.c_str());
+    }
+  }
+
+  file.close();
 }
 
 int Storage::get_album_index(std::shared_ptr<Album> album)
 {
-  for (int i = 0; i < albums.size(); ++i)
+  for (size_t i = 0; i < albums.size(); ++i)
   {
     if (albums[i] == album)
     {

@@ -24,3 +24,10 @@ std::shared_ptr<Album> Track::get_album()
 {
   return album;
 }
+
+std::string Track::get_index_data()
+{
+  std::stringstream ss;
+  ss << album->get_name() << ';' << name << ';' << file_path << ';' << rfid << ';';
+  return ss.str();
+}

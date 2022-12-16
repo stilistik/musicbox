@@ -125,11 +125,9 @@ void Player::on_card_read(std::string rfid)
   }
   else if (player_mode == PLAYER_MODE_RFID_WRITE)
   {
-    playSdWav1.stop();
-    delay(10);
     auto album = storage.get_album(current_album);
     auto track = album->get_track(current_track);
-    storage.write_track_rfid(rfid, track->get_file_path());
+    storage.write_track_rfid(rfid, track);
   }
 }
 

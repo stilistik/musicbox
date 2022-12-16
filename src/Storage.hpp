@@ -27,7 +27,7 @@ public:
   void update();
   std::shared_ptr<Album> get_album(int idx);
   std::shared_ptr<Track> get_track_by_rfid(std::string rfid);
-  void write_track_rfid(std::string rfid, std::string fp);
+  void write_track_rfid(std::string rfid, std::shared_ptr<Track> t);
   int get_album_index(std::shared_ptr<Album> album);
 };
 
