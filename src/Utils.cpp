@@ -31,3 +31,19 @@ bool str_contains_times(std::string str, std::string token, int times)
 {
   return str_count_occurrences(str, token) == times;
 }
+
+int keep_in_bounds(int value, int min, int max)
+{
+  if (value < min)
+  {
+    return max;
+  }
+  else if (value >= max)
+  {
+    return min;
+  }
+  else
+  {
+    return value;
+  }
+}

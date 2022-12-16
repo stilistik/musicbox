@@ -1,5 +1,6 @@
 #include "Player.hpp"
 #include "Monitor.hpp"
+#include "Utils.hpp"
 
 Player::Player(Storage &storage, CardReader &reader)
     : storage(storage),
@@ -89,13 +90,20 @@ void Player::on_prev()
 void Player::on_album()
 {
   monitor.print("ALBUM");
+  monitor.print(storage.get_album_count());
+  current_album = keep_in_bounds(++current_album, 0, storage.get_album_count());
+  auto album = storage.get_album(current_album);
+  auto track = album->get_track(current_track);
+
+  monitor.print(track->get_file_path());
+  playSdWav1.play(track->get_file_path().c_str());
 }
 
 void Player::update_volume()
 {
   int hpv = analogRead(HEADPHONE_PIN);
 
-  if (hpv > 50)
+  if (hpv > 200)
   {
     sgtl5000_1.unmuteLineout();
   }
@@ -104,10 +112,10 @@ void Player::update_volume()
     sgtl5000_1.muteLineout();
   }
 
-  int value = analogRead(VOLUME_PIN);
-  float volume = (float)value / 1023;
-  mixer1.gain(0, volume);
-  mixer2.gain(0, volume);
+  // int value = analogRead(VOLUME_PIN);
+  // float volume = (float)value / 1023;
+  // mixer1.gain(0, volume);
+  // mixer2.gain(0, volume);
 }
 
 void Player::on_card_read(std::string rfid)
