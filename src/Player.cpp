@@ -60,9 +60,7 @@ void Player::on_play()
     monitor.print("PLAY");
     auto album = storage.get_album(current_album);
     auto track = album->get_track(current_track);
-    auto fp = track->get_file_path();
-    monitor.print(fp);
-    playSdWav1.play(fp.c_str());
+    play_track(track);
   }
   else
   {
@@ -76,9 +74,7 @@ void Player::on_next()
   auto album = storage.get_album(current_album);
   current_track = constrain(++current_track, 0, album->size());
   auto track = album->get_track(current_track);
-  auto fp = track->get_file_path();
-  monitor.print(fp);
-  playSdWav1.play(fp.c_str());
+  play_track(track);
 }
 
 void Player::on_prev()
@@ -87,9 +83,7 @@ void Player::on_prev()
   auto album = storage.get_album(current_album);
   current_track = constrain(--current_track, 0, album->size());
   auto track = album->get_track(current_track);
-  auto fp = track->get_file_path();
-  monitor.print(fp);
-  playSdWav1.play(fp.c_str());
+  play_track(track);
 }
 
 void Player::on_album()
@@ -99,8 +93,23 @@ void Player::on_album()
   current_album = keep_in_bounds(++current_album, 0, storage.get_album_count());
   auto album = storage.get_album(current_album);
   auto track = album->get_track(current_track);
+  play_track(track);
+}
+
+void Player::play_track(std::shared_ptr<Track> track)
+{
   auto fp = track->get_file_path();
-  monitor.print(fp);
+  std::stringstream ss;
+  ss << "Playing file " << fp;
+  monitor.print(ss);
+
+  if (!SD.exists(fp.c_str()))
+  {
+    std::stringstream ss;
+    ss << "File " << fp << "does not exist.";
+    monitor.print(ss);
+    return;
+  }
   playSdWav1.play(fp.c_str());
 }
 

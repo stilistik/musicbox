@@ -56,6 +56,7 @@ private:
   void on_prev();
   void on_album();
   void update_volume();
+  void play_track(std::shared_ptr<Track> t);
 
 public:
   Player(Storage &storage, CardReader &reader);
