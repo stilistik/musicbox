@@ -50,6 +50,10 @@ void Player::setup()
 
 void Player::update()
 {
+  if (playSdWav1.isPlaying() && playSdWav1.lengthMillis() - playSdWav1.positionMillis() < 5)
+  {
+    on_next();
+  }
   update_volume();
 }
 
