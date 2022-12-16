@@ -29,6 +29,7 @@ public:
   std::shared_ptr<Track> get_track_by_rfid(std::string rfid);
   void write_track_rfid(std::string rfid, std::shared_ptr<Track> t);
   int get_album_index(std::shared_ptr<Album> album);
+  int get_album_count();
 };
 
 #endif /* STORAGE_HPP_ */
