@@ -60,8 +60,9 @@ void Player::on_play()
     monitor.print("PLAY");
     auto album = storage.get_album(current_album);
     auto track = album->get_track(current_track);
-    monitor.print(track->get_file_path());
-    playSdWav1.play(track->get_file_path().c_str());
+    auto fp = track->get_file_path();
+    monitor.print(fp);
+    playSdWav1.play(fp.c_str());
   }
   else
   {
@@ -75,7 +76,9 @@ void Player::on_next()
   auto album = storage.get_album(current_album);
   current_track = constrain(++current_track, 0, album->size());
   auto track = album->get_track(current_track);
-  playSdWav1.play(track->get_file_path().c_str());
+  auto fp = track->get_file_path();
+  monitor.print(fp);
+  playSdWav1.play(fp.c_str());
 }
 
 void Player::on_prev()
@@ -84,7 +87,9 @@ void Player::on_prev()
   auto album = storage.get_album(current_album);
   current_track = constrain(--current_track, 0, album->size());
   auto track = album->get_track(current_track);
-  playSdWav1.play(track->get_file_path().c_str());
+  auto fp = track->get_file_path();
+  monitor.print(fp);
+  playSdWav1.play(fp.c_str());
 }
 
 void Player::on_album()
@@ -94,9 +99,9 @@ void Player::on_album()
   current_album = keep_in_bounds(++current_album, 0, storage.get_album_count());
   auto album = storage.get_album(current_album);
   auto track = album->get_track(current_track);
-
-  monitor.print(track->get_file_path());
-  playSdWav1.play(track->get_file_path().c_str());
+  auto fp = track->get_file_path();
+  monitor.print(fp);
+  playSdWav1.play(fp.c_str());
 }
 
 void Player::update_volume()
