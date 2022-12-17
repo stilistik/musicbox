@@ -116,7 +116,7 @@ void Player::play_track(std::shared_ptr<Track> track)
   }
 
   playSdWav1.stop();
-  delay(50);
+  delay(200);
   playSdWav1.play(fp.c_str());
 }
 
@@ -149,7 +149,7 @@ void Player::on_card_read(std::string rfid)
       monitor.print(std::string(track->get_file_path()));
       current_album = storage.get_album_index(track->get_album());
       current_track = track->get_album()->get_track_index(track);
-      playSdWav1.play(track->get_file_path().c_str());
+      play_track(track);
     }
   }
   else if (player_mode == PLAYER_MODE_RFID_WRITE)

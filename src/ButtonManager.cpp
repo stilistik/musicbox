@@ -35,6 +35,10 @@ void ButtonManager::update()
 
 void ButtonManager::broadcast_click_event(Button *btn)
 {
+  if (play_album_pressed)
+  {
+    return;
+  }
   for (auto l : listeners)
   {
     l->on_button_click(btn);
