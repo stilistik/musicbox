@@ -121,32 +121,58 @@ std::shared_ptr<Track> Storage::get_track_by_rfid(std::string rfid)
 
 void Storage::write_track_rfid(std::string rfid, std::shared_ptr<Track> track)
 {
-  File file = SD.open("index.csv", FILE_WRITE);
+
+  File file = SD.open("index.csv", FILE_READ);
   if (!file)
   {
     monitor.print("No index.csv file found.");
     return;
   }
 
-  auto old_line = track->get_index_data();
-  track->set_rfid(rfid);
-  auto new_line = track->get_index_data();
+  auto old_track = get_track_by_rfid(rfid);
+  old_track->set_rfid("-1");
 
-  // Read the file line by line
+  auto old_rfid = track->get_rfid();
+  track->set_rfid(rfid);
+
+  std::vector<std::string> content;
   while (file.available())
   {
     auto line = std::string(file.readStringUntil('\n').c_str());
-    if (line == old_line)
+    // Find the index of the last newline character
+    size_t lastNewline = line.find_last_of("\n");
+
+    // If the string ends with a newline character, remove it
+    if (lastNewline != std::string::npos)
     {
-      file.println(new_line.c_str());
+      line.erase(lastNewline);
+    }
+
+    if (str_contains(line, track->get_file_path()))
+    {
+      content.push_back(track->get_index_data());
+    }
+    else if (str_contains(line, rfid))
+    {
+      content.push_back(replace(line, rfid, "-1"));
     }
     else
     {
-      file.println(line.c_str());
+      content.push_back(line);
     }
   }
-
   file.close();
+  delay(50);
+
+  File tmp_file = SD.open("index_tmp.csv", FILE_WRITE);
+  for (const std::string &line : content)
+  {
+    tmp_file.println(line.c_str());
+  }
+  tmp_file.close();
+
+  SD.remove("index.csv");
+  SD.rename("index_tmp.csv", "index.csv");
 }
 
 int Storage::get_album_index(std::shared_ptr<Album> album)

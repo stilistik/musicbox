@@ -47,3 +47,21 @@ int keep_in_bounds(int value, int min, int max)
     return value;
   }
 }
+
+std::string replace(const std::string &input, const std::string &substring, const std::string &replacement)
+{
+  std::string result;
+  std::string::size_type start_pos = 0;
+  std::string::size_type pos;
+
+  while ((pos = input.find(substring, start_pos)) != std::string::npos)
+  {
+    result.append(input, start_pos, pos - start_pos);
+    result.append(replacement);
+    start_pos = pos + substring.length();
+  }
+
+  result.append(input, start_pos, input.length() - start_pos);
+
+  return result;
+}

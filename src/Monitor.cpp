@@ -143,10 +143,8 @@ void Monitor::print(std::vector<std::string> &vec)
   {
     for (unsigned int i = 0; i < vec.size(); ++i)
     {
-      Serial.print(vec[i].c_str());
-      Serial.print(" ");
+      Serial.println(vec[i].c_str());
     }
-    Serial.println("");
   }
 }
 

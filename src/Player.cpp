@@ -133,10 +133,10 @@ void Player::update_volume()
     sgtl5000_1.muteLineout();
   }
 
-  // int value = analogRead(VOLUME_PIN);
-  // float volume = (float)value / 1023;
-  // mixer1.gain(0, volume);
-  // mixer2.gain(0, volume);
+  int value = 1023 - analogRead(VOLUME_PIN);
+  float volume = (float)value / 1023;
+  mixer1.gain(0, volume);
+  mixer2.gain(0, volume);
 }
 
 void Player::on_card_read(std::string rfid)
@@ -154,6 +154,8 @@ void Player::on_card_read(std::string rfid)
   }
   else if (player_mode == PLAYER_MODE_RFID_WRITE)
   {
+    playSdWav1.stop();
+    delay(50);
     auto album = storage.get_album(current_album);
     auto track = album->get_track(current_track);
     storage.write_track_rfid(rfid, track);
