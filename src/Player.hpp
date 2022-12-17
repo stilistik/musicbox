@@ -10,6 +10,7 @@
 #include "Storage.hpp"
 #include "CardReader.hpp"
 #include "ButtonManager.hpp"
+#include "LEDController.hpp"
 
 #define PLAY_BUTTON_PIN 29
 #define NEXT_BUTTON_PIN 31
@@ -32,6 +33,7 @@ class Player : public CardReaderListener, public ButtonManagerListener
 private:
   Storage &storage;
   CardReader &reader;
+  LEDController &led_ctrl;
 
   AudioPlaySdWav playSdWav1;
   AudioInputI2S i2s2;
@@ -59,7 +61,7 @@ private:
   void play_track(std::shared_ptr<Track> t);
 
 public:
-  Player(Storage &storage, CardReader &reader);
+  Player(Storage &storage, CardReader &reader, LEDController &led_ctrl);
   void setup();
   void update();
   void on_card_read(std::string rfid) override;

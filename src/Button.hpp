@@ -13,14 +13,9 @@
 #define PREV_BUTTON_PIN 30
 #define ALBUM_BUTTON_PIN 32
 
-#define PLAY_BUTTON_LED_PIN 36
-#define NEXT_BUTTON_LED_PIN 34
-#define PREV_BUTTON_LED_PIN 35
-#define ALBUM_BUTTON_LED_PIN 33
-
 #define PLAY_BUTTON_TYPE 0
-#define NEXT_BUTTON_TYPE 1
-#define PREV_BUTTON_TYPE 2
+#define PREV_BUTTON_TYPE 1
+#define NEXT_BUTTON_TYPE 2
 #define ALBUM_BUTTON_TYPE 3
 
 class Button;
@@ -38,7 +33,6 @@ class Button
 {
 private:
   int type;
-  unsigned int led_pin;
   Bounce bounce;
   long down_time = 0;
   std::vector<ButtonListener *> listeners;
@@ -48,8 +42,7 @@ private:
   void broadcast_up_event();
 
 public:
-  Button(unsigned int pin, unsigned int led_pin, int type);
-  void setup();
+  Button(unsigned int pin, int type);
   void update();
   void register_listener(ButtonListener *listener);
   int get_type();

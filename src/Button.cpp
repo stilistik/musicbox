@@ -2,12 +2,7 @@
 #include "Arduino.h"
 #include "Monitor.hpp"
 
-Button::Button(unsigned int pin, unsigned int led_pin, int type) : type(type), led_pin(led_pin), bounce(Bounce(pin, 10)) {}
-
-void Button::setup()
-{
-  pinMode(led_pin, OUTPUT);
-}
+Button::Button(unsigned int pin, int type) : type(type), bounce(Bounce(pin, 10)) {}
 
 void Button::update()
 {
@@ -33,14 +28,6 @@ void Button::update()
     }
     down_time = 0;
     broadcast_up_event();
-  }
-  if (is_pressed())
-  {
-    digitalWrite(led_pin, HIGH);
-  }
-  else
-  {
-    digitalWrite(led_pin, LOW);
   }
 }
 

@@ -4,6 +4,7 @@
 #include <vector>
 #include <memory>
 #include "Button.hpp"
+#include "LEDController.hpp"
 
 class ButtonManagerListener
 {
@@ -16,6 +17,7 @@ public:
 class ButtonManager : public ButtonListener
 {
 private:
+  LEDController &led_ctrl;
   std::vector<Button *> buttons;
   std::vector<ButtonManagerListener *> listeners;
 
@@ -26,7 +28,7 @@ private:
   bool play_album_pressed = false;
 
 public:
-  ButtonManager();
+  ButtonManager(LEDController &led_ctrl);
   void update();
   void setup();
   void register_listener(ButtonManagerListener *l);

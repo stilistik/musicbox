@@ -2,9 +2,10 @@
 #include "Monitor.hpp"
 #include "Utils.hpp"
 
-Player::Player(Storage &storage, CardReader &reader)
+Player::Player(Storage &storage, CardReader &reader, LEDController &led_ctrl)
     : storage(storage),
       reader(reader),
+      led_ctrl(led_ctrl),
       playSdWav1(AudioPlaySdWav()),
       i2s2(AudioInputI2S()),
       mixer1(AudioMixer4()),
@@ -141,6 +142,7 @@ void Player::update_volume()
 
 void Player::on_card_read(std::string rfid)
 {
+  led_ctrl.run_sequence();
   if (player_mode == PLAYER_MODE_RFID_READ)
   {
     auto track = storage.get_track_by_rfid(rfid);
