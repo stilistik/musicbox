@@ -1,4 +1,6 @@
+#include <algorithm>
 #include "Album.hpp"
+#include "Utils.hpp"
 #include "Arduino.h"
 
 Album::Album(std::string name) : name(name) {}
@@ -13,27 +15,22 @@ std::string Album::get_name()
   return name;
 }
 
-std::shared_ptr<Track> Album::get_track(int i)
-{
-  int index = constrain(i, 0, tracks.size() - 1);
-  return tracks[index];
-}
-
 int Album::size()
 {
   return tracks.size();
 }
 
-int Album::get_track_index(std::shared_ptr<Track> t)
+void Album::set_current_track(std::shared_ptr<Track> t)
 {
-  for (int i = 0; i < tracks.size(); ++i)
+  auto it = std::find(tracks.begin(), tracks.end(), t);
+  if (it != tracks.end())
   {
-    if (tracks[i] == t)
-    {
-      return i;
-    }
+    current_track_index = keep_in_bounds(std::distance(tracks.begin(), it), 0, tracks.size() - 1);
   }
-  return -1;
+  else
+  {
+    current_track_index = 0;
+  }
 }
 
 std::shared_ptr<Track> Album::get_next_track()

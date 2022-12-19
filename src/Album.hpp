@@ -16,9 +16,8 @@ public:
   Album(std::string name);
   void add_track(std::shared_ptr<Track> t);
   std::string get_name();
-  std::shared_ptr<Track> get_track(int i);
   int size();
-  int get_track_index(std::shared_ptr<Track> t);
+  void set_current_track(std::shared_ptr<Track> t);
   std::shared_ptr<Track> get_next_track();
   std::shared_ptr<Track> get_prev_track();
   std::shared_ptr<Track> get_current_track();

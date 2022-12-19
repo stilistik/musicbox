@@ -63,8 +63,8 @@ void Player::on_play()
   if (playSdWav1.isStopped())
   {
     monitor.print("PLAY");
-    auto track = storage.get_current_track();
-    play_track(track);
+    current_track = current_album->get_current_track();
+    play_track(current_track);
   }
   else
   {
@@ -75,23 +75,23 @@ void Player::on_play()
 void Player::on_next()
 {
   monitor.print("NEXT");
-  auto track = storage.get_next_track();
-  play_track(track);
+  current_track = current_album->get_next_track();
+  play_track(current_track);
 }
 
 void Player::on_prev()
 {
   monitor.print("PREV");
-  auto track = storage.get_prev_track();
-  play_track(track);
+  current_track = current_album->get_prev_track();
+  play_track(current_track);
 }
 
 void Player::on_album()
 {
   monitor.print("ALBUM");
-  auto album = storage.get_next_album();
-  auto track = album->get_current_track();
-  play_track(track);
+  current_album = storage.get_next_album(current_album);
+  current_track = current_album->get_current_track();
+  play_track(current_track);
 }
 
 void Player::play_track(std::shared_ptr<Track> track)
@@ -101,6 +101,9 @@ void Player::play_track(std::shared_ptr<Track> track)
   ss << "Playing file " << fp;
   monitor.print(ss);
 
+  playSdWav1.stop();
+  delay(200);
+
   if (!SD.exists(fp.c_str()))
   {
     std::stringstream ss;
@@ -109,8 +112,6 @@ void Player::play_track(std::shared_ptr<Track> track)
     return;
   }
 
-  playSdWav1.stop();
-  delay(200);
   playSdWav1.play(fp.c_str());
 }
 
@@ -151,6 +152,7 @@ void Player::on_card_read(std::string rfid)
       {
         monitor.print(std::string(track->get_file_path()));
         current_album = track->get_album();
+        current_album->set_current_track(track);
         current_track = track;
         play_track(track);
       }

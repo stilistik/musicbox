@@ -4,6 +4,7 @@
 #include <vector>
 #include <sstream>
 #include <string>
+#include <algorithm>
 
 Storage::Storage()
 {
@@ -42,6 +43,7 @@ void Storage::read_index()
   if (!file)
   {
     monitor.print("No index.csv file found.");
+    restore_index_from_backup();
     return;
   }
 
@@ -50,6 +52,7 @@ void Storage::read_index()
   while (file.available())
   {
     auto line = std::string(file.readStringUntil('\n').c_str());
+    index_content.push_back(line);
     lineIndex++;
 
     std::vector<std::string> tokens;
@@ -65,15 +68,12 @@ void Storage::read_index()
     {
       std::stringstream ss;
       ss << "ERROR: Malformed index.csv received. Error on line " << lineIndex;
-      ss << " . Restoring from backup";
       monitor.print(ss);
 
       file.close();
       restore_index_from_backup();
       return;
     }
-
-    monitor.print(tokens);
 
     auto album_name = tokens.at(0);
     auto track_name = tokens.at(1);
@@ -86,17 +86,20 @@ void Storage::read_index()
     album->add_track(track);
   }
 
+  monitor.print(index_content);
+
   file.close();
 }
 
 void Storage::restore_index_from_backup()
 {
+  monitor.print("Restoring index.csv from backup.");
 
   // read from the original file
   File backup = SD.open("backup.csv");
   if (!backup)
   {
-    Serial.println("Error opening backup.csv file");
+    monitor.print("Error opening backup.csv file");
     return;
   }
 
@@ -104,7 +107,7 @@ void Storage::restore_index_from_backup()
   File index = SD.open("index.csv", FILE_WRITE);
   if (!index)
   {
-    Serial.println("Error creating index.csv file");
+    monitor.print("Error creating index.csv file");
     return;
   }
 
@@ -136,12 +139,6 @@ void Storage::update()
 {
 }
 
-std::shared_ptr<Album> Storage::get_album(int idx)
-{
-  int index = constrain(idx, 0, albums.size() - 1);
-  return albums[index];
-}
-
 std::shared_ptr<Track> Storage::get_track_by_rfid(std::string rfid)
 {
   for (auto t : tracks)
@@ -156,13 +153,16 @@ std::shared_ptr<Track> Storage::get_track_by_rfid(std::string rfid)
 
 void Storage::write_track_rfid(std::string rfid, std::shared_ptr<Track> track)
 {
-  File file = SD.open("index.csv", FILE_WRITE);
+  monitor.print("A");
+
+  File file = SD.open("index.csv", FILE_WRITE_BEGIN);
   if (!file)
   {
-    monitor.print("No index.csv file found.");
+    monitor.print("Error opening writable index.csv file.");
     return;
   }
-  file.seek(0);
+
+  monitor.print("B");
 
   auto old_track = get_track_by_rfid(rfid);
   if (old_track != nullptr)
@@ -170,88 +170,43 @@ void Storage::write_track_rfid(std::string rfid, std::shared_ptr<Track> track)
     old_track->set_rfid("-1");
   }
 
+  monitor.print("C");
+
   auto old_rfid = track->get_rfid();
   track->set_rfid(rfid);
 
-  // Keep track of the current position in the file
-  size_t current_pos = 0;
+  monitor.print("D");
 
   // Read and process each line of the file
-  while (file.available())
+  for (auto &line : index_content)
   {
-    auto line = std::string(file.readStringUntil('\n').c_str());
-    // Find the index of the last newline character
-    size_t lastNewline = line.find_last_of("\n");
-
-    // If the string ends with a newline character, remove it
-    if (lastNewline != std::string::npos)
-    {
-      line.erase(lastNewline);
-    }
-
-    // Update the current position in the file
-    current_pos = file.position();
-
     // Modify the line if necessary
     if (str_contains(line, track->get_file_path()))
     {
-      line = track->get_index_data();
+      file.println(track->get_index_data().c_str());
     }
     else if (str_contains(line, rfid))
     {
-      line = replace(line, rfid, "-1");
+      file.println(replace(line, rfid, "-1").c_str());
     }
-
-    // Write the modified line back to the file
-    file.seek(current_pos - line.size() - 1);
-    file.println(line.c_str());
+    else
+    {
+      file.println(line.c_str());
+    }
   }
-
   file.close();
 }
 
-int Storage::get_album_index(std::shared_ptr<Album> album)
+std::shared_ptr<Album> Storage::get_next_album(std::shared_ptr<Album> current_album)
 {
-  for (size_t i = 0; i < albums.size(); ++i)
+  auto it = std::find(albums.begin(), albums.end(), current_album);
+  if (it != albums.end())
   {
-    if (albums[i] == album)
-    {
-      return i;
-    }
+    auto index = keep_in_bounds(std::distance(albums.begin(), it) + 1, 0, albums.size() - 1);
+    return albums.at(index);
   }
-  return -1;
-}
-
-int Storage::get_album_count()
-{
-  return albums.size();
-}
-
-std::shared_ptr<Album> Storage::get_next_album()
-{
-  current_album_index = keep_in_bounds(current_album_index + 1, 0, albums.size() - 1);
-  return albums.at(current_album_index);
-}
-
-std::shared_ptr<Album> Storage::get_current_album()
-{
-  return albums.at(current_album_index);
-}
-
-std::shared_ptr<Track> Storage::get_current_track()
-{
-  auto album = albums.at(current_album_index);
-  return album->get_current_track();
-}
-
-std::shared_ptr<Track> Storage::get_next_track()
-{
-  auto album = albums.at(current_album_index);
-  return album->get_next_track();
-}
-
-std::shared_ptr<Track> Storage::get_prev_track()
-{
-  auto album = albums.at(current_album_index);
-  return album->get_prev_track();
+  else
+  {
+    return albums.at(0);
+  }
 }
