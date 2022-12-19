@@ -66,7 +66,6 @@ void LEDController::flash(int pin_index)
   {
     return;
   }
-  monitor.print("TEST");
   flash_end_time = millis() + FLASH_MS;
   flash_pin = ledpins.at(pin_index);
   digitalWrite(flash_pin, HIGH);

@@ -69,6 +69,8 @@ void Storage::read_index()
       return;
     }
 
+    monitor.print(tokens);
+
     auto album_name = tokens.at(0);
     auto track_name = tokens.at(1);
     auto file_path = tokens.at(2);
@@ -121,21 +123,27 @@ std::shared_ptr<Track> Storage::get_track_by_rfid(std::string rfid)
 
 void Storage::write_track_rfid(std::string rfid, std::shared_ptr<Track> track)
 {
-
-  File file = SD.open("index.csv", FILE_READ);
+  File file = SD.open("index.csv", FILE_WRITE);
   if (!file)
   {
     monitor.print("No index.csv file found.");
     return;
   }
+  file.seek(0);
 
   auto old_track = get_track_by_rfid(rfid);
-  old_track->set_rfid("-1");
+  if (old_track != nullptr)
+  {
+    old_track->set_rfid("-1");
+  }
 
   auto old_rfid = track->get_rfid();
   track->set_rfid(rfid);
 
-  std::vector<std::string> content;
+  // Keep track of the current position in the file
+  size_t current_pos = 0;
+
+  // Read and process each line of the file
   while (file.available())
   {
     auto line = std::string(file.readStringUntil('\n').c_str());
@@ -148,31 +156,25 @@ void Storage::write_track_rfid(std::string rfid, std::shared_ptr<Track> track)
       line.erase(lastNewline);
     }
 
+    // Update the current position in the file
+    current_pos = file.position();
+
+    // Modify the line if necessary
     if (str_contains(line, track->get_file_path()))
     {
-      content.push_back(track->get_index_data());
+      line = track->get_index_data();
     }
     else if (str_contains(line, rfid))
     {
-      content.push_back(replace(line, rfid, "-1"));
+      line = replace(line, rfid, "-1");
     }
-    else
-    {
-      content.push_back(line);
-    }
+
+    // Write the modified line back to the file
+    file.seek(current_pos - line.size() - 1);
+    file.println(line.c_str());
   }
+
   file.close();
-  delay(50);
-
-  File tmp_file = SD.open("index_tmp.csv", FILE_WRITE);
-  for (const std::string &line : content)
-  {
-    tmp_file.println(line.c_str());
-  }
-  tmp_file.close();
-
-  SD.remove("index.csv");
-  SD.rename("index_tmp.csv", "index.csv");
 }
 
 int Storage::get_album_index(std::shared_ptr<Album> album)
