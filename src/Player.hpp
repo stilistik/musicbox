@@ -48,8 +48,8 @@ private:
   AudioConnection patchCord6;
   AudioControlSGTL5000 sgtl5000_1;
 
-  int current_track = 0;
-  int current_album = 0;
+  std::shared_ptr<Album> current_album;
+  std::shared_ptr<Track> current_track;
   int player_mode = PLAYER_MODE_RFID_READ;
 
   void update_buttons();

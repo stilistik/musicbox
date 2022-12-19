@@ -35,3 +35,20 @@ int Album::get_track_index(std::shared_ptr<Track> t)
   }
   return -1;
 }
+
+std::shared_ptr<Track> Album::get_next_track()
+{
+  current_track_index = constrain(current_track_index + 1, 0, tracks.size() - 1);
+  return tracks.at(current_track_index);
+}
+
+std::shared_ptr<Track> Album::get_prev_track()
+{
+  current_track_index = constrain(current_track_index - 1, 0, tracks.size() - 1);
+  return tracks.at(current_track_index);
+}
+
+std::shared_ptr<Track> Album::get_current_track()
+{
+  return tracks.at(current_track_index);
+}

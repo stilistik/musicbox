@@ -65,7 +65,11 @@ void Storage::read_index()
     {
       std::stringstream ss;
       ss << "ERROR: Malformed index.csv received. Error on line " << lineIndex;
+      ss << " . Restoring from backup";
       monitor.print(ss);
+
+      file.close();
+      restore_index_from_backup();
       return;
     }
 
@@ -83,6 +87,35 @@ void Storage::read_index()
   }
 
   file.close();
+}
+
+void Storage::restore_index_from_backup()
+{
+
+  // read from the original file
+  File backup = SD.open("backup.csv");
+  if (!backup)
+  {
+    Serial.println("Error opening backup.csv file");
+    return;
+  }
+
+  SD.remove("index.csv");
+  File index = SD.open("index.csv", FILE_WRITE);
+  if (!index)
+  {
+    Serial.println("Error creating index.csv file");
+    return;
+  }
+
+  // read the contents of the original file and write them to the copy file
+  while (backup.available())
+  {
+    index.write(backup.read());
+  }
+
+  backup.close();
+  index.close();
 }
 
 std::shared_ptr<Album> Storage::get_album_with_name(std::string name)
@@ -192,4 +225,33 @@ int Storage::get_album_index(std::shared_ptr<Album> album)
 int Storage::get_album_count()
 {
   return albums.size();
+}
+
+std::shared_ptr<Album> Storage::get_next_album()
+{
+  current_album_index = keep_in_bounds(current_album_index + 1, 0, albums.size() - 1);
+  return albums.at(current_album_index);
+}
+
+std::shared_ptr<Album> Storage::get_current_album()
+{
+  return albums.at(current_album_index);
+}
+
+std::shared_ptr<Track> Storage::get_current_track()
+{
+  auto album = albums.at(current_album_index);
+  return album->get_current_track();
+}
+
+std::shared_ptr<Track> Storage::get_next_track()
+{
+  auto album = albums.at(current_album_index);
+  return album->get_next_track();
+}
+
+std::shared_ptr<Track> Storage::get_prev_track()
+{
+  auto album = albums.at(current_album_index);
+  return album->get_prev_track();
 }

@@ -63,8 +63,7 @@ void Player::on_play()
   if (playSdWav1.isStopped())
   {
     monitor.print("PLAY");
-    auto album = storage.get_album(current_album);
-    auto track = album->get_track(current_track);
+    auto track = storage.get_current_track();
     play_track(track);
   }
   else
@@ -76,29 +75,22 @@ void Player::on_play()
 void Player::on_next()
 {
   monitor.print("NEXT");
-  auto album = storage.get_album(current_album);
-  current_track = constrain(++current_track, 0, album->size());
-  auto track = album->get_track(current_track);
+  auto track = storage.get_next_track();
   play_track(track);
 }
 
 void Player::on_prev()
 {
   monitor.print("PREV");
-  auto album = storage.get_album(current_album);
-  current_track = constrain(--current_track, 0, album->size());
-  auto track = album->get_track(current_track);
+  auto track = storage.get_prev_track();
   play_track(track);
 }
 
 void Player::on_album()
 {
   monitor.print("ALBUM");
-  monitor.print(storage.get_album_count());
-  current_album = keep_in_bounds(++current_album, 0, storage.get_album_count());
-  current_track = 0;
-  auto album = storage.get_album(current_album);
-  auto track = album->get_track(current_track);
+  auto album = storage.get_next_album();
+  auto track = album->get_current_track();
   play_track(track);
 }
 
@@ -147,21 +139,28 @@ void Player::on_card_read(std::string rfid)
   if (player_mode == PLAYER_MODE_RFID_READ)
   {
     auto track = storage.get_track_by_rfid(rfid);
+
     if (track)
     {
-      monitor.print(std::string(track->get_file_path()));
-      current_album = storage.get_album_index(track->get_album());
-      current_track = track->get_album()->get_track_index(track);
-      play_track(track);
+      if (track.get() == current_track.get())
+      {
+        // read rfid represents track that is currently playing
+        return;
+      }
+      else
+      {
+        monitor.print(std::string(track->get_file_path()));
+        current_album = track->get_album();
+        current_track = track;
+        play_track(track);
+      }
     }
   }
   else if (player_mode == PLAYER_MODE_RFID_WRITE)
   {
     playSdWav1.stop();
     delay(200);
-    auto album = storage.get_album(current_album);
-    auto track = album->get_track(current_track);
-    storage.write_track_rfid(rfid, track);
+    storage.write_track_rfid(rfid, current_track);
   }
 }
 
