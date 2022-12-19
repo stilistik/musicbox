@@ -63,6 +63,7 @@ void Player::on_play()
   if (playSdWav1.isStopped())
   {
     monitor.print("PLAY");
+    current_album = storage.get_next_album(current_album);
     current_track = current_album->get_current_track();
     play_track(current_track);
   }
@@ -129,9 +130,13 @@ void Player::update_volume()
   }
 
   int value = 1023 - analogRead(VOLUME_PIN);
-  float volume = (float)value / 1023;
-  mixer1.gain(0, volume);
-  mixer2.gain(0, volume);
+  if (abs(prev_value - value) > 5)
+  {
+    float volume = (float)value / 1023;
+    mixer1.gain(0, volume);
+    mixer2.gain(0, volume);
+    prev_value = value;
+  }
 }
 
 void Player::on_card_read(std::string rfid)

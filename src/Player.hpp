@@ -51,6 +51,7 @@ private:
   std::shared_ptr<Album> current_album;
   std::shared_ptr<Track> current_track;
   int player_mode = PLAYER_MODE_RFID_READ;
+  int prev_value = 0;
 
   void update_buttons();
   void on_play();
