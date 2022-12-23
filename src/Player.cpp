@@ -166,6 +166,10 @@ void Player::on_card_read(std::string rfid)
       if (track.get() == current_track.get())
       {
         // read rfid represents track that is currently playing
+        if (playSdWav1.isPaused())
+        {
+          playSdWav1.togglePlayPause();
+        }
         return;
       }
       else
