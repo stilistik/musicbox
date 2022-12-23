@@ -87,12 +87,19 @@ void Player::on_next()
 void Player::on_prev()
 {
   monitor.print("PREV");
-  if (!current_album)
+  if (playSdWav1.positionMillis() > 3000 && current_track)
   {
-    current_album = storage.get_next_album(current_album);
+    play_track(current_track);
   }
-  current_track = current_album->get_prev_track();
-  play_track(current_track);
+  else
+  {
+    if (!current_album)
+    {
+      current_album = storage.get_next_album(current_album);
+    }
+    current_track = current_album->get_prev_track();
+    play_track(current_track);
+  }
 }
 
 void Player::on_album()
