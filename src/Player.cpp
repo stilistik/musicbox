@@ -51,7 +51,7 @@ void Player::setup()
 
 void Player::update()
 {
-  if (playSdWav1.isPlaying() && playSdWav1.lengthMillis() - playSdWav1.positionMillis() < 5)
+  if (playSdWav1.isPlaying() && playSdWav1.lengthMillis() - playSdWav1.positionMillis() < 500)
   {
     on_next();
   }
