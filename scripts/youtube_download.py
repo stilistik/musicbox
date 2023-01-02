@@ -2,14 +2,14 @@ import os
 import youtube_dl
 
 # Set the location to save the downloaded videos
-save_location = '/Users/philippgerber/Desktop/musicbox/music'
+save_location = '/Users/philippgerber/Desktop/musicbox/downloads'
 
 # Set the URLs to download
 urls = [
-    'https://www.youtube.com/watch?v=45B7H7uGDGk',
-    'https://www.youtube.com/watch?v=WU1Uwc6OHVk',
-    'https://www.youtube.com/watch?v=VNEyRhlrjiA',
-    'https://www.youtube.com/watch?v=xRS4vnLWssg',
+    'https://www.youtube.com/watch?v=L70jsue-wEg',
+    'https://www.youtube.com/watch?v=oIKt5p3UmXg',
+    'https://www.youtube.com/watch?v=jIyVB1b2aBs',
+    'https://www.youtube.com/watch?v=Ll7l2KXygNg',
 ]
 
 # Set the options for youtube-dl
@@ -22,6 +22,7 @@ ydl_opts = {
         'key': 'FFmpegExtractAudio',
         'preferredcodec': 'wav',
         'preferredquality': '192',
+        'ar': '44100',
     }],
 }
 
