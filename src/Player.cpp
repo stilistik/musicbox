@@ -213,10 +213,18 @@ void Player::on_button_click(Button *btn)
 
 void Player::on_play_album_pressed()
 {
-  player_mode = PLAYER_MODE_RFID_WRITE;
 }
 
 void Player::on_play_album_released()
+{
+}
+
+void Player::on_prev_next_pressed()
+{
+  player_mode = PLAYER_MODE_RFID_WRITE;
+}
+
+void Player::on_prev_next_released()
 {
   player_mode = PLAYER_MODE_RFID_READ;
 }

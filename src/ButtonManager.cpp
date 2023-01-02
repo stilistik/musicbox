@@ -52,6 +52,13 @@ void ButtonManager::on_button_down(Button *btn)
     play_album_pressed = true;
     broadcast_play_album_pressed_event();
   }
+
+  if (buttons[NEXT_BUTTON_TYPE]->is_pressed() && buttons[PREV_BUTTON_TYPE]->is_pressed())
+  {
+    prev_next_pressed = true;
+    broadcast_prev_next_released_event();
+  }
+
   led_ctrl.flash(btn->get_type());
 }
 
@@ -63,6 +70,15 @@ void ButtonManager::on_button_up(Button *btn)
     {
       play_album_pressed = false;
       broadcast_play_album_released_event();
+    }
+  }
+
+  if (prev_next_pressed)
+  {
+    if (!buttons[PREV_BUTTON_TYPE]->is_pressed() || !buttons[NEXT_BUTTON_TYPE]->is_pressed())
+    {
+      prev_next_pressed = false;
+      broadcast_prev_next_released_event();
     }
   }
 }
@@ -82,6 +98,24 @@ void ButtonManager::broadcast_play_album_released_event()
   for (auto l : listeners)
   {
     l->on_play_album_released();
+  }
+}
+
+void ButtonManager::broadcast_prev_next_pressed_event()
+{
+  monitor.print("prev/next pressed");
+  for (auto l : listeners)
+  {
+    l->on_prev_next_pressed();
+  }
+}
+
+void ButtonManager::broadcast_prev_next_released_event()
+{
+  monitor.print("prev/next released");
+  for (auto l : listeners)
+  {
+    l->on_prev_next_released();
   }
 }
 

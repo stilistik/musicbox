@@ -12,6 +12,8 @@ public:
   virtual void on_button_click(Button *btn) = 0;
   virtual void on_play_album_pressed() = 0;
   virtual void on_play_album_released() = 0;
+  virtual void on_prev_next_pressed() = 0;
+  virtual void on_prev_next_released() = 0;
 };
 
 class ButtonManager : public ButtonListener
@@ -24,8 +26,11 @@ private:
   void broadcast_click_event(Button *btn);
   void broadcast_play_album_pressed_event();
   void broadcast_play_album_released_event();
+  void broadcast_prev_next_pressed_event();
+  void broadcast_prev_next_released_event();
 
   bool play_album_pressed = false;
+  bool prev_next_pressed = false;
 
 public:
   ButtonManager(LEDController &led_ctrl);

@@ -69,6 +69,8 @@ public:
   void on_button_click(Button *btn) override;
   void on_play_album_pressed() override;
   void on_play_album_released() override;
+  void on_prev_next_pressed() override;
+  void on_prev_next_released() override;
 };
 
 #endif /* PLAYER_HPP_ */
