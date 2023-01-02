@@ -76,7 +76,7 @@ void Player::on_play()
 void Player::on_next()
 {
   monitor.print("NEXT");
-  if (!current_album)
+  if (!current_album || !current_album->has_next())
   {
     current_album = storage.get_next_album(current_album);
   }

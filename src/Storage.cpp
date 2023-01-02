@@ -202,7 +202,7 @@ std::shared_ptr<Album> Storage::get_next_album(std::shared_ptr<Album> current_al
   auto it = std::find(albums.begin(), albums.end(), current_album);
   if (it != albums.end())
   {
-    auto index = keep_in_bounds(std::distance(albums.begin(), it) + 1, 0, albums.size() - 1);
+    auto index = keep_in_bounds(std::distance(albums.begin(), it) + 1, 0, albums.size());
     return albums.at(index);
   }
   else

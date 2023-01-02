@@ -21,6 +21,7 @@ public:
   std::shared_ptr<Track> get_next_track();
   std::shared_ptr<Track> get_prev_track();
   std::shared_ptr<Track> get_current_track();
+  bool has_next();
 };
 
 #endif /* ALBUM_HPP_ */

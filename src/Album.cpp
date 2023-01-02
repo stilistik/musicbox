@@ -49,3 +49,8 @@ std::shared_ptr<Track> Album::get_current_track()
 {
   return tracks.at(current_track_index);
 }
+
+bool Album::has_next()
+{
+  return current_track_index < tracks.size() - 1;
+}
