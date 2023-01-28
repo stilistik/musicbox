@@ -6,11 +6,6 @@ save_location = '/Users/philippgerber/Desktop/musicbox/downloads'
 
 # Set the URLs to download
 urls = [
-    'https://www.youtube.com/watch?v=fb3vdTYnKGM',
-    'https://www.youtube.com/watch?v=hEeTkSycTbk',
-    'https://www.youtube.com/watch?v=UyZr3VT7ewc',
-    'https://www.youtube.com/watch?v=beyM_Kge0Js',
-    'https://www.youtube.com/watch?v=LCiRGyWaCms',
     'https://www.youtube.com/watch?v=VSuDGPBzHAA',
     'https://www.youtube.com/watch?v=nszQak1noAk',
     'https://www.youtube.com/watch?v=j9963chszKA',
@@ -37,7 +32,7 @@ ydl_opts = {
         'preferredcodec': 'wav',
         'preferredquality': '192',
     }],
-    'postprocessor_args': ['-ar', '16000'],
+    'postprocessor_args': ['-ar', '44100'],
 }
 
 # Download the videos
