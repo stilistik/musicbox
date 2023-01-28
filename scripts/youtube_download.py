@@ -6,10 +6,24 @@ save_location = '/Users/philippgerber/Desktop/musicbox/downloads'
 
 # Set the URLs to download
 urls = [
-    'https://www.youtube.com/watch?v=L70jsue-wEg',
-    'https://www.youtube.com/watch?v=oIKt5p3UmXg',
-    'https://www.youtube.com/watch?v=jIyVB1b2aBs',
-    'https://www.youtube.com/watch?v=Ll7l2KXygNg',
+    'https://www.youtube.com/watch?v=fb3vdTYnKGM',
+    'https://www.youtube.com/watch?v=hEeTkSycTbk',
+    'https://www.youtube.com/watch?v=UyZr3VT7ewc',
+    'https://www.youtube.com/watch?v=beyM_Kge0Js',
+    'https://www.youtube.com/watch?v=LCiRGyWaCms',
+    'https://www.youtube.com/watch?v=VSuDGPBzHAA',
+    'https://www.youtube.com/watch?v=nszQak1noAk',
+    'https://www.youtube.com/watch?v=j9963chszKA',
+    'https://www.youtube.com/watch?v=ysI-r9yqNmk',
+    'https://www.youtube.com/watch?v=BbG7NoVPxjY',
+    'https://www.youtube.com/watch?v=60GiSucMaYA',
+    'https://www.youtube.com/watch?v=0ILvyLIRTnI',
+    'https://www.youtube.com/watch?v=Y6ZGd2fbSLk',
+    'https://www.youtube.com/watch?v=sGiT-qAM1GA',
+    'https://www.youtube.com/watch?v=PirhZnM8S7M',
+    'https://www.youtube.com/watch?v=M6LzToyUnaE',
+    'https://www.youtube.com/watch?v=TlgeHJw8elY',
+    'https://www.youtube.com/watch?v=aFkCo2WWE7M',
 ]
 
 # Set the options for youtube-dl
@@ -22,8 +36,8 @@ ydl_opts = {
         'key': 'FFmpegExtractAudio',
         'preferredcodec': 'wav',
         'preferredquality': '192',
-        'ar': '44100',
     }],
+    'postprocessor_args': ['-ar', '16000'],
 }
 
 # Download the videos
